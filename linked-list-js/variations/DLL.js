@@ -8,7 +8,7 @@ class Node {
     }
 }
 
-class DLL {
+class DoublyLinkedList {
     #start
     constructor() {
         this.#start = null
@@ -20,7 +20,7 @@ class DLL {
 
     get view() {
         if (this.isEmpty) {
-            return { message: "Empty List!" }
+            return "List is Empty"
         }
         let iterator = this.#start
         const values = []
@@ -41,7 +41,7 @@ class DLL {
         return iterator
     }
 
-    insert(value) {
+    insertAtEnd(value) {
         const newNode = new Node(value)
 
         if (this.isEmpty) this.#start = newNode
@@ -56,7 +56,7 @@ class DLL {
             current.next = newNode
         }
 
-        return { message: `Node (${value}) inserted!` }
+        return `Node (${value}) inserted!`
     }
 
     insertAfter(after, value) {
@@ -70,10 +70,10 @@ class DLL {
             if (targetNode.next) targetNode.next.prev = newNode
             targetNode.next = newNode
 
-            return { message: `Node (${value}) inserted after (${after})` }
+            return `Node (${value}) inserted after (${after})`
         }
 
-        return { message: `Node (${after}) not found!` }
+        return `Node (${after}) not found!`
     }
 
     insertBefore(before, value) {
@@ -89,31 +89,39 @@ class DLL {
             if (targetNode.prev) targetNode.prev.next = newNode
             targetNode.prev = newNode
 
-            return { message: `Node (${value}) inserted before (${before})` }
+            return `Node (${value}) inserted before (${before})`
         }
 
-        return { message: `Node (${before}) not found!` }
+        return `Node (${before}) not found!`
     }
 
     deleteFirst() {
-        if (this.isEmpty) return { message: "Empty List!" }
+        if (this.isEmpty) return "List is Empty"
+
+        const deletedNode = this.#start
 
         if (this.#start.next) this.#start.next.prev = null
         this.#start = this.#start.next
 
-        return { message: "First Node deleted!" }
+        deletedNode.prev = null
+        deletedNode.next = null
+
+        return `Deleted: ${deletedNode.value}`
     }
 
     deleteLast() {
-        if (this.isEmpty) return { message: "Empty List!" }
+        if (this.isEmpty) return "Empty List!"
         else if (!this.#start.next) {
+            this.#start.next = null
             this.#start = null
         } else {
-            let iterator = this.#start
+            var iterator = this.#start
             while (iterator.next) iterator = iterator.next
             iterator.prev.next = null
+
+            iterator.prev = null
         }
-        return { message: "Last node deleted!" }
+        return `Deleted: ${iterator.value}`
     }
 
     deleteSpecific(value) {
@@ -121,15 +129,17 @@ class DLL {
 
         if (target) {
             if (target === this.#start) {
-                if (this.#start.next) this.#start = this.#start.next
-                else this.#start = null
+                this.#start = target.next ? target.next : null
             }
             if (target.prev) target.prev.next = target.next
             if (target.next) target.next.prev = target.prev
-            return { message: `Node (${value}) deleted!` }
+
+            target.next = null
+            target.prev = null
+            return `Deleted: ${target.value}`
         }
-        return { message: `Node (${value}) not found!` }
+        return `Node ${value} not found`
     }
 }
 
-module.exports = DLL
+module.exports = DoublyLinkedList
